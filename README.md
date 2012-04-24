@@ -42,4 +42,7 @@ var complexObservable = ko.observable({
   ko.mapping.fromJSON(data, null, target);
 }});
 ```
+
+Snapshots can be taken by calling the ``snapshot`` function, and observables can be reverted back to a snapshot by calling the ``revert`` function. If supplied a numerical value, ``revert`` will apply the snapshot at that location in the stack while removing all snapshots that came after that snapshot. Calling ``clearSnapshots`` will remove all snapshots for the observable.
+
 A more advanced example can be found here: http://jsfiddle.net/Areson/5KWxQ/
