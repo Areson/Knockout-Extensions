@@ -1,5 +1,10 @@
-Knockout.Pause
-==============
+Knockout-Extensions
+===================
+A collection of knockout extensions that I have put together for various projects
+
+
+Knockout.Pauseable
+=================
 
 A fleshed-out implementation of the pausable observables for both array and non-array versions, based on the the work done by Ryan Niemeyer.
 
