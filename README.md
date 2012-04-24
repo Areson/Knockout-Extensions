@@ -22,3 +22,24 @@ myObservable.resume();
 ```
 
 The extension also works for Observable Arrays, and includes support for all of the native and Knockout specific array functions.
+
+### Knockout.Snapshot
+This extensions adds the ability to take a "snapshot" of the current state of the observable which can later be restored. The extensions supports having a number of snapshots in a stack, and this could be used to implement a sort-of undo feature using observables.
+
+The behavior for how the snapshots is applied is customizable, and the default behavior works well for "simple" observables, such as objects with no observable methods or basic types or arrays. This default behavior can be overridden by supplying a function as the argument for the extension. The function must accept two arguments: 
+* The snapshot data (as JSON)
+* The target to apply the data to (the observable) 
+
+Here is an example of using the [ko.mapping plugin](http://knockoutjs.com/documentation/plugins-mapping.html) in order to handle more complex observables.
+
+```javascript
+var complexObservable = ko.observable({
+  id: ko.observable(),
+  value: ko.observable()
+}).extend({snapshot: function(data, target) {
+  //The ko.mapping.fromJSON function takes three arguments,
+  //so we must do some mapping
+  ko.mapping.fromJSON(data, null, target);
+}});
+```
+A more advanced example can be found here: http://jsfiddle.net/Areson/5KWxQ/
