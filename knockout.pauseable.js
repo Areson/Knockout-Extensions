@@ -113,7 +113,7 @@ ko.extenders.pauseable = function(target) {
 		    	if(!_isPaused())
 		        	underlyingArray = _actual;
 		        else
-		        	var underlyingArray = _cachedValue;
+		        	underlyingArray = _cachedValue;
 		        
 		        return underlyingArray[methodName].apply(underlyingArray, arguments);
 		    };
