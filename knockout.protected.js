@@ -1,13 +1,36 @@
-ko.extenders.protected = function(target) {
+ko.extenders.protected = function(target, options) {
     var _actual = target;
+    var _deepObjects = [];
 
     //Setup how we will "copy" the values 
     //back and forth
     var copyValue = function(value) {
-        if (_actual.removeAll) return ($.extend(true, [], value));
+        if (_actual.removeAll) 
+            return ($.extend(true, [], value));
+        else if ($.isPlainObject(_actual()))
+            return $.extend({}, value);
         else return (value);
     }
 
+    //Are we doing "deep" protection?
+    if(options.deep)
+    {
+        //Get the underlying object
+        var object = _actual();
+        
+        //Iterate over all observables and protect them
+        for(var name in object)
+        {
+            if(ko.isObservable(object[name]))
+            {
+                //Make the observable protected
+                object[name] = ko.extenders.protected(object[name], options);
+                //Save the observable to our "protected" array
+                _deepObjects.push(object[name])
+            }
+        }
+    }
+    
     //Hold onto the intermediate value in between commits
     var _cachedValue = copyValue(target());
 
@@ -23,14 +46,35 @@ ko.extenders.protected = function(target) {
         }
     });
 
+    var _deepCommit = function() {
+        for(var i in _deepObjects)
+            _deepObjects[i].commit();
+    }
+    
+    var _deepReset = function() {
+        for(var i in _deepObjects)
+            _deepObjects[i].reset();        
+    }
+        
     //Commit the changes to the observable
     result.commit = function() {
-        _actual(copyValue(_cachedValue));
+        if($.isPlainObject(_actual()))
+        {
+            if(options.deep && _deepObjects.length > 0)
+                _deepCommit();
+            else
+                _actual(copyValue(_cachedValue));
+        }
+        else
+            _actual(copyValue(_cachedValue));
     }
 
     result.reset = function() {
         _actual.valueHasMutated();
         _cachedValue = copyValue(_actual());
+        
+        if(options.deep)
+            _deepReset();
     }
 
     //Setup array functions if this is an array
