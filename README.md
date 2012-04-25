@@ -43,6 +43,21 @@ var complexObservable = ko.observable({
 }});
 ```
 
-Snapshots can be taken by calling the ``snapshot`` function, and observables can be reverted back to a snapshot by calling the ``revert`` function. If supplied a numerical value, ``revert`` will apply the snapshot at that location in the stack while removing all snapshots that came after that snapshot. Calling ``clearSnapshots`` will remove all snapshots for the observable.
+Snapshots can be taken by calling the ``snapshot`` function, which optionally takes a _name_ parameter to identify the snapshot. A list of the snapshots can be obtained by referencing the ``snapshots`` observable. Each snapshot contained in the list contains the data for that snapshot, along with the name and index of the snapshot.
+
+An observable can be reverted back to the last snapshot taken by calling the ``revert`` function. If supplied a numerical value, ``revert`` will apply the snapshot at that location in the stack while removing all snapshots that came after that snapshot. Passing snapshot from the ``snapshots`` array will also cause the observable to revert back to that snapshot while removing all the snapshots that come after it in the stack.
+
+Calling ``clearSnapshots`` will remove all snapshots for the observable.
+
+Examples:
+```javascript
+//This reverts the observable back to the last snapshot taken
+complexObservable.revert();
+//This reverts the observable back to the snapshot at position 2 in the snapshot array
+complexObservable.revert(2);
+//This reverts the observable back to the snapshot that we passed in
+var snapshot = complexObservable.snapshots.pop();
+complexObservable.revert(snapshot);
+```
 
 A more advanced example can be found here: http://jsfiddle.net/Areson/5KWxQ/
