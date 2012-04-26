@@ -1,3 +1,7 @@
+/* A fleshed-out implementation of the dirtiable observables
+ * based on the the work done by Ryan Niemeyer.  
+ * (http://www.knockmeout.net/2011/05/creating-smart-dirty-flag-in-knockoutjs.html)
+ */ 
 ko.extenders.dirtiable = function(target) {
     var _dirty = {};
     _dirty.isDirty = ko.observable(false);

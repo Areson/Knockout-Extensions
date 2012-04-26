@@ -2,8 +2,7 @@
  * for both array and non-array versions, based on the the work
  * done by Ryan Niemeyer.  
  * (http://www.knockmeout.net/2011/04/pausing-notifications-in-knockoutjs.html)
- */
- 
+ */ 
 ko.extenders.pauseable = function(target) {
 	var _actual = target;
 	var _cachedValue = null;
