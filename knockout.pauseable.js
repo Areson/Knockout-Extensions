@@ -36,6 +36,36 @@ ko.extenders.pauseable = function(target) {
 		_isPaused(false);
 	}
 	
+	// Minification in KO breaks overriding "valueWillMutate" and "valueHasMutated",
+	// as they aren't referenced by those names once minified.
+	// So we have to target notifySubscribers instead...
+	var _notifySubscribers = _actual.notifySubscribers;
+
+	_actual.notifySubscribers = function() {
+		if(!_isPaused()) {
+			_notifySubscribers.apply(target, arguments);
+		}
+	} 
+
+	// Then, find the underlying minimized functions and apply them to the computed observable
+	// First, find "valueWillMutate"
+	for(var fn in _actual) {
+		if(_actual[fn] === _actual.valueWillMutate) {
+			result.valueWillMutate = _actual.valueWillMutate;
+			result[fn] = result.valueWillMutate;
+			break;
+		}
+	}
+
+	// Then, find "valueHasMutated"
+	for(var fn in _actual) {
+		if(_actual[fn] === _actual.valueHasMutated) {
+			result.valueHasMutated = _actual.valueHasMutated;
+			result[fn] = result.valueHasMutated;
+			break;
+		}
+	}
+	
 	if(target.removeAll)
 	{
 		result.push = function(value) {
